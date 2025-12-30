@@ -4,7 +4,8 @@ A minimal base image that adds an SSH server and rsync to any container image.
 
 ## Usage
 
-Build a new image using the provided [Dockerfile](image/Dockerfile) with the following options:
+Build a new image using the provided [Dockerfile](image/Dockerfile):
+ - There is no need to download the Dockerfile; use https://github.com/domingues/docker-add-sshd.git#:image directly as the build context.
  - Set `BASE_IMAGE` to an APT-based image on which `sshd` and `rsync` will be installed (defaults to `debian:trixie`).
  - Optionally set `RUN` to add a custom command to the build instructions.
 - `/root/workspace` is the working directory for both build-time `RUN` instruction and the runtime `CMD`.
