@@ -1,0 +1,72 @@
+name: docker-sshd-examples
+
+services:
+
+  debian:
+    image: domingues/debian-sshd:trixie
+    build:
+      context: ./image
+    ports:
+      - "2200:22"
+    environment:
+      PUBLIC_KEY: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDFWlZ8rT+qLoxs6VBdf6lhB/fZuiWxETqFJBQ4XrXEz"
+    volumes:
+      - ssh0:/etc/ssh
+
+  ubuntu:
+    image: domingues/ubuntu-sshd:25.10
+    build:
+      context: ./image
+      args:
+        BASE_IMAGE: ubuntu:25.10
+        RUN: |
+          apt-get update && apt-get install -y --no-install-recommends \
+            htop \
+            tmux \
+          && rm -rf /var/lib/apt/lists/*
+    ports:
+      - "2201:22"
+    environment:
+      PUBLIC_KEY: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDFWlZ8rT+qLoxs6VBdf6lhB/fZuiWxETqFJBQ4XrXEz"
+    volumes:
+      - ssh1:/etc/ssh
+
+  python:
+    image: domingues/python-sshd:3.14
+    build:
+      context: ./image
+      args:
+        BASE_IMAGE: python:3.14-trixie
+    ports:
+      - "2202:22"
+    environment:
+      PUBLIC_KEY: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDFWlZ8rT+qLoxs6VBdf6lhB/fZuiWxETqFJBQ4XrXEz"
+    volumes:
+      - ssh2:/etc/ssh
+      - workspace2:/root/workspace
+
+  jupyter-notebook:
+    image: domingues/jupyter-notebook-sshd:py-3.14
+    build:
+      context: ./image
+      args:
+        BASE_IMAGE: python:3.14-trixie
+        RUN: pip install uv && uv pip install --system notebook && uv cache clean
+    ports:
+      - "2203:22"
+      - "8888:8888"
+    environment:
+      PUBLIC_KEY: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDFWlZ8rT+qLoxs6VBdf6lhB/fZuiWxETqFJBQ4XrXEz"
+      JUPYTER_TOKEN: "af4c2615749105e70d0d34700d030b8bc308c44939041078"
+    volumes:
+      - ssh3:/etc/ssh
+      - workspace3:/root/workspace
+    command: ["jupyter", "notebook", "--allow-root", "--ip", "0.0.0.0"]
+
+volumes:
+  ssh0:
+  ssh1:
+  ssh2:
+  workspace2:
+  ssh3:
+  workspace3:

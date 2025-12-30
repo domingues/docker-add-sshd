@@ -1,0 +1,7 @@
+.env
+
+# IDEA
+.idea/
+
+# MacOS
+.DS_Store
