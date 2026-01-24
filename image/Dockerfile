@@ -22,7 +22,7 @@ if [ -n "$PUBLIC_KEY" ]; then
   chmod 700 /root/.ssh
   chmod 600 /root/.ssh/authorized_keys
 fi
-/usr/sbin/sshd -D &
+/usr/sbin/sshd
 exec "$@"
 EOF
 chmod +x /usr/local/bin/entrypoint_e7e8494f.sh
@@ -30,7 +30,7 @@ EOC
 
 ENTRYPOINT ["entrypoint_e7e8494f.sh"]
 
-CMD trap : TERM INT; sleep infinity & wait
+CMD ["/bin/sh", "-c", "trap : TERM INT; sleep infinity & wait"]
 
 EXPOSE 22
 
